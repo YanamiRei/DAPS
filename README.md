@@ -13,7 +13,7 @@ The `clear` command will clear everything on screen.
 See Configuration below for options.
 ### clearhist 
 Clears history.
-The shell cannot record hidtory if you have rn this command until the shell is restarted.
+The shell cannot record history if you have rn this command until the shell is restarted.
 This is a feature to prevent bugs, and cannot be turned off.
 ### exit
 Exits the shell.
@@ -49,6 +49,5 @@ Like so:
 "aliases": {
 "ll": "ls -l"
 }
-}
 ```
-# Have a nice time!
+## Have a nice time!
