@@ -18,6 +18,8 @@ This is a feature to prevent bugs, and cannot be turned off.
 ### exit
 Exits the shell.
 What else would it do?
+### update
+This command will update DAPS by cloning DAPS into a temp folder, coping that version of DAPS into /usr/bin.
 # Configuration of the shell
 The shell will create a file named config.json in the ~/.config/daps/ directory where ~ is your cuurent user's home folder.
 By defualt, the file will only contain: 

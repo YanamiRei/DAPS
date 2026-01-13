@@ -60,6 +60,13 @@ elif cwd == f"/root":
                 cwd = "~"
         else:
                 pass
+def update():
+    print("Updating.. A sudo prompt may appear soon.")
+    os.system("rm -rf /tmp/daps/")
+    os.system("git clone https://github.com/Stormzady/DAPS /tmp/daps")
+    os.system("sudo cp /tmp/daps/daps /usr/bin/daps")
+    os.system("rm -rf /tmp/daps/")
+    print("Done!")
 def clear():
         os.system("clear")
 def runfc(confsec):
@@ -107,6 +114,8 @@ while True:
                         open(historyfile, "w").close()
                         historycleared = 1
                         print(f"{COLOR_ERR}ATTENTION! History will no longer be recorded until you restart the shell! (exit and then log back in/run daps)")
+                elif ccmd == "update":
+                    update()
                 elif ccmd == "exit":
                         sys.exit(255)
                 elif is_interactive:
