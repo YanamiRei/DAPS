@@ -51,4 +51,10 @@ Like so:
 }
 }
 ```
+### "cleargreet"
+"cleargreet" specifies if the greeter program should be ran on `clear`.
+Like so:
+{
+"cleargreet": "yes"
+}
 ## Have a nice time!

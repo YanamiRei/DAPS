@@ -6,11 +6,8 @@ import readline
 import subprocess
 import signal
 import json
-
 # DO NOT MODIFY ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING!
-
 devmode = False
-
 # Colourwgfues
 COLOR_RE = "\033[0m"
 COLOR_USER = "\033[92m"
@@ -18,111 +15,117 @@ COLOR_HOST = "\033[94m"
 COLOR_CWD = "\033[96m"
 COLOR_ERR = "\033[91m"
 def loadconf():
-	whereis = os.path.expanduser("~/.config/daps/config.json")
-	if os.path.exists(whereis):
-		with open(f"{whereis}", "r") as f:
-			return json.load(f)
-	else:
-		if os.path.exists(os.path.expanduser("~/.config/daps")):
-			if os.path.exists(os.path.expanduser("~/.config/daps/config.json")):
-				print("Invalid JSON in the config file.")
-				sys.exit(255)
-			else:
-				todoto = os.path.expanduser("~/.config/daps/config.json")
-				subprocess.run(["echo " "{} " ">> " f"{todoto}" ], shell=True)
-		else:
-			os.makedirs(os.path.expanduser("~/.config/daps"))	
+        whereis = os.path.expanduser("~/.config/daps/config.json")
+        if os.path.exists(whereis):
+                with open(f"{whereis}", "r") as f:
+                        return json.load(f)
+        else:
+                if os.path.exists(os.path.expanduser("~/.config/daps")):
+                        if os.path.exists(os.path.expanduser("~/.config/daps/config.json")):
+                                print("Invalid JSON in the config file.")
+                                sys.exit(255)
+                        else:
+                                todoto = os.path.expanduser("~/.config/daps/config.json")
+                                subprocess.run(["echo " "{} " ">> " f"{todoto}" ], shell=True)
+                else:
+                        os.makedirs(os.path.expanduser("~/.config/daps"))
 # Shenanigans taht make it go brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 config = loadconf()
 alias = config["aliases"]
+if config["cleargreet"] == "yes":
+    cleargreet = True
+else:
+    cleargreet = False
 signal.signal(signal.SIGINT, lambda sig, frame: sys.exit(255))
 readline.parse_and_bind("tab: complete")
 readline.parse_and_bind("set show-all-if-ambiguous-on")
 historyfile = os.path.expanduser("~/.daps.history")
 if os.path.exists(historyfile):
-	readline.read_history_file(historyfile)
+        readline.read_history_file(historyfile)
 icmds = ["nano", "vi", "vim", "less", "more", "bash", "zsh", "fish", "sudo", "daps"]
 user = subprocess.run(["whoami"], capture_output=True, text=True).stdout.strip()
 hostn = subprocess.run(["cat", "/etc/hostname"], capture_output=True, text=True).stdout.strip()
 if devmode == True:
-	shostn = os.system("cat /etc/dapshostn")
-	if hostn == shostn:
-		pass
-	else:
-		print("Your hostname DOES NOT match the compiled hostname.")
-		sys.exit(255)
+        shostn = os.system("cat /etc/dapshostn")
+        if hostn == shostn:
+                pass
+        else:
+                print("Your hostname DOES NOT match the compiled hostname.")
+                sys.exit(255)
 cwd = os.getcwd()
 if cwd == f"/home/{user}":
-	cwd = "~"
+        cwd = "~"
 elif cwd == f"/root":
-	if user == "root":
-		cwd = "~"
-	else:
-		pass
+        if user == "root":
+                cwd = "~"
+        else:
+                pass
 def clear():
-	os.system("clear")
+        os.system("clear")
 def runfc(confsec):
-	torun = config[f"{confsec}"]
-	os.system(torun)
+        torun = config[f"{confsec}"]
+        os.system(torun)
 # out = subprocess.run([f"{torun}"], capture_output=True, text=True)
 # print(out.stdout)
 clear()
 runfc("greeter")
-
 historycleared = 0
 errcode = None
 while True:
-	try:
-		cwd = os.getcwd()
-		home = os.path.expanduser("~")
-		if cwd.startswith(home):
-			cwd= cwd.replace(home, "~", 1)
-		if not errcode:
-			print(f"{COLOR_USER}{user}{COLOR_RE}@{COLOR_HOST}{hostn}{COLOR_RE} - {COLOR_CWD}{cwd}{COLOR_RE}")
-		else:
-			print(f"{COLOR_ERR}[{errcode}]{COLOR_RE} - {COLOR_USER}{user}{COLOR_RE}@{COLOR_HOST}{hostn}{COLOR_RE} - {COLOR_CWD}{cwd}")
-		try:
-			cmd = input(f"{COLOR_USER}>{COLOR_HOST} ").strip()
-		except EOFError as eof:
-			print("An exception occurred at ^D - EOFError.\n DAPS will now close.")
-			sys.exit(123)
-		if cmd in alias:
-			cmd = alias[cmd]
-		if not cmd:
-			continue
-		cmdsp = cmd.split()
-		ccmd = cmdsp[0]
-		ccmar = cmdsp[1:]
-		all_cmds = [ccmd] + ccmar
-		is_interactive = any(cmd in icmds for cmd in all_cmds)
-		if ccmd == "cd":
-			os.chdir(ccmar[0] if ccmar else f"/home/{user}")
-			errcode = "0"
-		elif ccmd == "clear":
-			clear()
-		elif ccmd == "clearhist":
-			readline.clear_history()
-			open(historyfile, "w").close()
-			historycleared = 1
-			print(f"{COLOR_ERR}ATTENTION! History will no longer be recorded until you restart the shell! (exit and then log back in/run daps)")
-		elif ccmd == "exit":
-			sys.exit(255)
-		elif is_interactive:
-			result = subprocess.run([ccmd] + ccmar, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
-			errcode = result.returncode
-		else:
-			if shutil.which(ccmd):
-				result = subprocess.run([ccmd] + ccmar, capture_output=True, text=True).stdout
-				print(f"{COLOR_RE}{result}")
-			else:
-				result = subprocess.run(cmd, shell=True)
-		if errcode == "0":
-			errcode = None
-	except Exception as e:
-		print(f"An exception has occurred. {e}")
-	finally:
-		if historycleared:
-			readline.clear_history()
-			pass
-		else:
-			readline.write_history_file(historyfile)
+        try:
+                cwd = os.getcwd()
+                home = os.path.expanduser("~")
+                if cwd.startswith(home):
+                        cwd= cwd.replace(home, "~", 1)
+                if not errcode:
+                        print(f"{COLOR_USER}{user}{COLOR_RE}@{COLOR_HOST}{hostn}{COLOR_RE} - {COLOR_CWD}{cwd}{COLOR_RE}")
+                else:
+                        print(f"{COLOR_ERR}[{errcode}]{COLOR_RE} - {COLOR_USER}{user}{COLOR_RE}@{COLOR_HOST}{hostn}{COLOR_RE} - {COLOR_CWD}{cwd}")
+                try:
+                        cmd = input(f"{COLOR_USER}>{COLOR_HOST} ").strip()
+                except EOFError as eof:
+                        print("An exception occurred at ^D - EOFError.\n DAPS will now close.")
+                        sys.exit(123)
+                if cmd in alias:
+                        cmd = alias[cmd]
+                if not cmd:
+                        continue
+                cmdsp = cmd.split()
+                ccmd = cmdsp[0]
+                ccmar = cmdsp[1:]
+                all_cmds = [ccmd] + ccmar
+                is_interactive = any(cmd in icmds for cmd in all_cmds)
+                if ccmd == "cd":
+                        os.chdir(ccmar[0] if ccmar else f"/home/{user}")
+                        errcode = "0"
+                elif ccmd == "clear":
+                        clear()
+                        if cleargreet:
+                            runfc("greeter")
+                elif ccmd == "clearhist":
+                        readline.clear_history()
+                        open(historyfile, "w").close()
+                        historycleared = 1
+                        print(f"{COLOR_ERR}ATTENTION! History will no longer be recorded until you restart the shell! (exit and then log back in/run daps)")
+                elif ccmd == "exit":
+                        sys.exit(255)
+                elif is_interactive:
+                        result = subprocess.run([ccmd] + ccmar, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
+                        errcode = result.returncode
+                else:
+                        if shutil.which(ccmd):
+                                result = subprocess.run([ccmd] + ccmar, capture_output=True, text=True).stdout
+                                print(f"{COLOR_RE}{result}")
+                        else:
+                                result = subprocess.run(cmd, shell=True)
+                if errcode == "0":
+                        errcode = None
+        except Exception as e:
+                print(f"An exception has occurred. {e}")
+        finally:
+                if historycleared:
+                        readline.clear_history()
+                        pass
+                else:
+                        readline.write_history_file(historyfile)
+
