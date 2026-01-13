@@ -2,8 +2,11 @@
 DAPS is a shell written in pure Python. No other language except from JSON for the configuration file is used.
 # Installation
 Go to Releases and get the newest version of DAPS.
-This may be a pre-release or a release.
-Then, copy the daps file to /usr/bin either using `sudo cp daps /usr/bin` in the place you saved daps to or copy it with a file manager.
+This is a .zip for Releases and a single file for pre-releases. (Pre-releases can some times be .zips too! Make sure you're downloading the correct version!)
+I'd recommend a stable version, aka as a "Release"
+Once downloaded, extract to a folder of your choice.
+Open the `installer` foler and run install.sh.
+After that, just run `daps`!
 # Usage
 Here comes the fun part!
 Basic shell commands work, like `cd` or `ls`.
