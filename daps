@@ -28,12 +28,12 @@ def loadconf():
                                 todoto = os.path.expanduser("~/.config/daps/config.json")
                                 subprocess.run(["echo " "{} " ">> " f"{todoto}" ], shell=True)
                                 if os.path.exists(whereis):
-                                    with open("whereis", "r") as f:
+                                    with open(f"whereis", "r") as f:
                                         return json.load(f)
                 else:
                         os.makedirs(os.path.expanduser("~/.config/daps"))
                         todoto = os.path.expanduser("~/.config/daps/config.json")
-                        subprocess.run(["echo " "{} " "> " f"todoto"], shell=True)
+                        subprocess.run(["echo " "{} " "> " f"{todoto}"], shell=True)
                         if os.path.exists(whereis):
                             with open(f"whereis", "r") as f:
                                 return json.load(f)
